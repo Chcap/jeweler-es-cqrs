@@ -1,4 +1,6 @@
 
+const EVENT_TYPES = require('./event-types');
+
 function submit (history = []) {
 
   const submitted = history.some(event => event.type === EVENT_TYPES.CART_SUBMITTED);
@@ -31,11 +33,6 @@ function builder (history = []) {
     remove (jewelId) { return builder(remove(jewelId, history)) },
     history
   };
-}
-
-const EVENT_TYPES = {
-  CART_SUBMITTED: 'CartSubmitted',
-  JEWEL_ADDED: 'JewelAdded'
 }
 
 module.exports = {
