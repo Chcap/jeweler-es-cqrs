@@ -7,42 +7,39 @@ chai.should();
 
 describe('Cart Event handler', function () {
 
-  describe('#handle()', function () {
-    it('should return cart with one jewel when handling event JewelAdded ', function () {
-      const repository = {};
-      const event = {
-        type: cart.EVENT_TYPES.JEWEL_ADDED,
-        data: {
-          id: 'foo'
-        }
+  it('should return cart with one jewel when handling event JewelAdded ', function () {
+    const repository = {};
+    const event = {
+      type: cart.EVENT_TYPES.JEWEL_ADDED,
+      data: {
+        id: 'foo'
       }
-      cartEventHandler.handle(event, repository);
+    }
+    cartEventHandler[cart.EVENT_TYPES.JEWEL_ADDED](repository, event);
 
-      repository.cartDescription.should.deep.equal({
-        cart: [{ id: 'foo' }]
-      });
-    })
+    repository.cartDescription.should.deep.equal({
+      cart: [{ id: 'foo' }]
+    });
+  })
 
-    it('should return empty cart when handling event JewelRemoved given Cart with one jewel ', function () {
-      const event = {
-        type: cart.EVENT_TYPES.JEWEL_REMOVED,
-        data: {
-          id: 'foo'
-        }
-      };
-      const repository = [];
-      const history = [{
-        type: cart.EVENT_TYPES.JEWEL_ADDED,
-        data: {
-          id: 'foo'
-        }
-      }];
+  it('should return empty cart when handling event JewelRemoved given Cart with one jewel ', function () {
+    const event = {
+      type: cart.EVENT_TYPES.JEWEL_REMOVED,
+      data: {
+        id: 'foo'
+      }
+    };
+    const repository = {};
+    const cartDescription = {
+      cart: [{
+        id: 'foo'
+      }]
+    };
 
-      cartEventHandler.handle(event, repository, history );
+    cartEventHandler[cart.EVENT_TYPES.JEWEL_REMOVED](repository, event, cartDescription);
 
-      repository.cartDescription.should.deep.equal({
-        cart: []
-      })
+    repository.cartDescription.should.deep.equal({
+      cart: []
     })
   })
 })

@@ -3,24 +3,29 @@ class EventDispatcher {
 
   constructor() {
     this.store = {}
-    this.handlers = [];
+    this.handlers = {};
   }
 
-  publish(event) {
+  publish (event) {
     if (this.store[event.cartId] === undefined) {
       this.store[event.cartId] = [];
     }
     this.store[event.cartId].push(event);
 
-    this.handlers.forEach(handler => handler(event))
+    if (this.handlers[event.type]) {
+      this.handlers[event.type].forEach(handler => handler(event))
+    }
   }
 
-  getEvents(id) {
+  getEvents (id) {
     return this.store[id] || [];
   }
 
-  subscribe(handler) {
-    this.handlers.push(handler);
+  subscribe (eventType, handler) {
+    if (this.handlers[eventType] === undefined) {
+      this.handlers[eventType] = []
+    }
+    this.handlers[eventType].push(handler);
   }
 }
 

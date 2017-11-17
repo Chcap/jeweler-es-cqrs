@@ -1,18 +1,20 @@
-const eventTypes = require('./event-types');
+const EVENT_TYPES = require('./event-types');
 
-function apply (jewels, event) {
-
-  if (event.type === eventTypes.JEWEL_ADDED) {
-    return [...jewels, event.data];
-  } else if (event.type === eventTypes.JEWEL_REMOVED) {
-    return jewels.filter(jewel => jewel.id !== event.data.id)
-  }
-  return jewels;
+function persistCart (repository, cartDescription) {
+  repository.cartDescription = cartDescription;
 }
 
-function handle (event, repository = {}, history = []) {
-  const cart = [...history, event].reduce(apply, []);
-  repository.cartDescription = {cart};
+function handleJewelAdded (repository, event, cartDescription = {cart: []}) {
+  cartDescription.cart.push(event.data);
+  persistCart(repository, cartDescription)
 }
 
-module.exports = { handle }
+function handleJewelRemoved (repository, event, cartDescription = {cart: []}) {
+  cartDescription.cart = cartDescription.cart.filter(jewel => jewel.id !== event.data.id)
+  persistCart(repository, cartDescription)
+}
+
+module.exports = {
+  [EVENT_TYPES.JEWEL_ADDED]: handleJewelAdded,
+  [EVENT_TYPES.JEWEL_REMOVED]: handleJewelRemoved
+}

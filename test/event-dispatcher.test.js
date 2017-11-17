@@ -46,7 +46,7 @@ describe('Event Dispatcher', function () {
       // given
       const eventDispatcher = new EventDispatcher();
       const handler = sinon.spy();
-      eventDispatcher.subscribe(handler);
+      eventDispatcher.subscribe(EVENT_TYPES.JEWEL_ADDED, handler);
 
       // when
       eventDispatcher.publish({
@@ -65,11 +65,11 @@ describe('Event Dispatcher', function () {
     it('should display updated projection when send command', function () {
       // given
       const eventDispatcher = new EventDispatcher();
-      const repository = {}
-      function handle (event, history) {
-        cartEventHandler.handle(event, repository, history);
+      const repository = {};
+      function handleJewelAdded (event, cartDescription) {
+        cartEventHandler[EVENT_TYPES.JEWEL_ADDED](repository, event, cartDescription);
       }
-      eventDispatcher.subscribe(handle);
+      eventDispatcher.subscribe(EVENT_TYPES.JEWEL_ADDED, handleJewelAdded);
 
       // when
       cart
