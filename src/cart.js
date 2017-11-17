@@ -35,7 +35,7 @@ class Cart {
             this._pushEvent(event);
         }
     }
-    
+
     add (data) {
         const event = Object.assign({
             type: EVENT_TYPES.JEWEL_ADDED,

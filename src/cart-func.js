@@ -3,9 +3,16 @@ const EVENT_TYPES = require('./event-types');
 
 function submit (history = []) {
 
-  const submitted = history.some(event => event.type === EVENT_TYPES.CART_SUBMITTED);
-  const hasJewel = history.some(event => event.type === EVENT_TYPES.JEWEL_ADDED);
-  if (!submitted && hasJewel) {
+  const state = history.reduce((acc, event) => {
+      if (event.type === EVENT_TYPES.CART_SUBMITTED) {
+        acc.submitted = true;
+      } else if (event.type === EVENT_TYPES.JEWEL_ADDED) {
+        acc.hasJewel = true;
+      }
+      return acc;
+  }, {submitted: false, hasJewel: false});
+
+  if (!state.submitted && state.hasJewel) {
     return [{
       type: EVENT_TYPES.CART_SUBMITTED,
       submitAt: new Date()
@@ -16,10 +23,11 @@ function submit (history = []) {
 }
 
 function add (jewel) {
-  return [Object.assign({
+  return [{
     type: EVENT_TYPES.JEWEL_ADDED,
-    submitAt: new Date()
-  }, jewel)];
+    submitAt: new Date(),
+    data: jewel
+  }];
 }
 
 function remove () {

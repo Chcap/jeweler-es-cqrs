@@ -85,13 +85,15 @@ describe('Cart-func', function () {
       // given
 
       // when
-      const result = cart.add({ data: 'some jewel data' });
+      const result = cart.add({ foo: 'some jewel data' });
 
       // then
       result.should.deep.equal([{
         type: cart.EVENT_TYPES.JEWEL_ADDED,
         submitAt: FAKE_TIME,
-        data: 'some jewel data'
+        data: {
+          foo: 'some jewel data'
+        }
       }]);
 
     });
