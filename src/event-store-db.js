@@ -11,9 +11,11 @@ class EventStore {
   }
 
   get (aggId) {
-    return new Promise (resolve => this.store.readStreamEventsBackward(
-      aggId, 0, 1, true, true, null, credentials,
-      completed => resolve(completed.events)))
+    return new Promise(resolve => this.store.readStreamEventsForward(
+      aggId, 0, 100, true, false, null, credentials,
+      completed => {
+        resolve(completed.events)
+      }))
   }
 
   push (event) {
@@ -22,12 +24,17 @@ class EventStore {
       eventType: event.type,
       data: event
     }
-    this.store.writeEvents(
+    return new Promise((resolve, reject) => this.store.writeEvents(
       event.aggId,
-      EventStoreClient.ExpectedVersion.Any,
+      event.aggSeq,
       true,
       [escEvent],
-      credentials, () => { })
+      credentials, result => {
+        if (result.result === 0) {
+          return resolve()
+        }
+        reject(result.message)
+      }))
   }
 }
 
