@@ -14,7 +14,7 @@ class EventStore {
     return new Promise(resolve => this.store.readStreamEventsForward(
       aggId, 0, 100, true, false, null, credentials,
       completed => {
-        resolve(completed.events)
+        resolve(completed.events.map(event => event.data))
       }))
   }
 

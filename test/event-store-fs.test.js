@@ -8,8 +8,14 @@ chai.should()
 const expect = chai.expect
 const FILE_NAME = 'store.json'
 
-describe.skip('Event Store', function () {
+describe('Event Store', function () {
   beforeEach(function () {
+    if (fs.existsSync(FILE_NAME)) {
+      fs.unlinkSync(FILE_NAME)
+    }
+  })
+
+  afterEach(function () {
     if (fs.existsSync(FILE_NAME)) {
       fs.unlinkSync(FILE_NAME)
     }

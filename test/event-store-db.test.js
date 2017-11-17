@@ -1,5 +1,6 @@
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
+const _ = require('lodash')
 const EventStore = require('../src/event-store-db')
 const EVENT_TYPES = require('../src/event-types')
 
@@ -7,16 +8,17 @@ chai.use(chaiAsPromised)
 chai.should()
 
 const expect = chai.expect
+const STREAM_ID = 'bar'
 
-describe.only('Event Store DB', function () {
+describe('Event Store DB', function () {
 
   it('should store events and allow to read them', async function () {
     // given
     const store = new EventStore()
-    const existingEvents = await store.get('foo')
-    const lastSeq = existingEvents[existingEvents.length - 1].data.aggSeq
+    const existingEvents = await store.get(STREAM_ID)
+    const lastSeq = (_.last(existingEvents) && _.last(existingEvents).aggSeq) || 0
     const event = {
-      aggId: 'foo',
+      aggId: STREAM_ID,
       type: EVENT_TYPES.JEWEL_ADDED,
       aggSeq: lastSeq + 1
     }
@@ -25,21 +27,21 @@ describe.only('Event Store DB', function () {
     const readStore = new EventStore()
 
     // when
-    const events = await readStore.get('foo')
+    const events = await readStore.get(STREAM_ID)
 
     // then
-    events[events.length - 1].data.should.deep.equal(event)
+    _.last(events).should.deep.equal(event)
   })
 
   it('should raise error when using sequence already stored', async function () {
     // given
     const store = new EventStore()
-    const existingEvents = await store.get('foo')
-    const lastSeq = existingEvents[existingEvents.length - 1].data.aggSeq
+    const existingEvents = await store.get(STREAM_ID)
+    const lastExistingSeq = (_.last(existingEvents) && _.last(existingEvents).aggSeq) || 0
     const event = {
-      aggId: 'foo',
+      aggId: STREAM_ID,
       type: EVENT_TYPES.JEWEL_ADDED,
-      aggSeq: lastSeq
+      aggSeq: lastExistingSeq
     }
 
     // when
