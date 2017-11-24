@@ -18,3 +18,6 @@ To launch tests automatically after source or test file modification:
 ```
 npm run watch
 ```
+
+
+Some tests are using the DB **event store**. You can install it from https://eventstore.org/
